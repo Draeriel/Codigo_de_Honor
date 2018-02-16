@@ -3,6 +3,7 @@ package org.mvpigs.pigcoin;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.util.ArrayList;
 
 public class Wallet {
 
@@ -53,5 +54,25 @@ public class Wallet {
                 "Total output = " + getTotal_output() + "\n" +
                 "Balance = " + getBalance() + "\n";
     }
+
+    public void loadCoins(BlockChain bChain){
+        dineroEnviado(bChain);
+        dineroRecibido(bChain);
+    }
+
+    public void dineroEnviado(BlockChain bChain) {
+        ArrayList<Double> senderPC = new ArrayList<>(bChain.devuelveSenderPC(address));
+        for (double total : senderPC){
+            this.total_output += total;
+        }
+    }
+
+    public void dineroRecibido(BlockChain bChain) {
+        ArrayList<Double> senderPC = new ArrayList<>(bChain.devuelveRecipientPC(address));
+        for (double total : senderPC){
+            this.total_input += total;
+        }
+    }
+
 }
 

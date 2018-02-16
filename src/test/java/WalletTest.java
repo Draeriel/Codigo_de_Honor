@@ -40,4 +40,6 @@ public class WalletTest {
         System.out.println("Wallet_1: \n" + monedero.toString());
         System.out.println("Wallet_2: \n" + monedero2.toString());
     }
+
+
 }
