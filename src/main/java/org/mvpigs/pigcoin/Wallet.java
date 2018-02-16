@@ -33,5 +33,25 @@ public class Wallet {
         setSK(pair.getPrivate());
         setAddress(pair.getPublic());
     }
+
+    public double getTotal_input() {
+        return total_input;
+    }
+
+    public double getTotal_output() {
+        return total_output;
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+
+    @Override
+    public String toString(){
+        return "Wallet = " + getAddress().hashCode() + "\n" +
+                "Total input = " + getTotal_input() + "\n" +
+                "Total output = " + getTotal_output() + "\n" +
+                "Balance = " + getBalance() + "\n";
+    }
 }
 

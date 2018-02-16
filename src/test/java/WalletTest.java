@@ -8,9 +8,10 @@ import java.security.KeyPair;
 import static org.junit.Assert.assertEquals;
 
 public class WalletTest {
-    private Wallet monedero;
-    private Wallet monedero2;
+    private Wallet monedero = new Wallet();
+    private Wallet monedero2 = new Wallet();
     private KeyPair pair = GenSig.generateKeyPair();
+
     @Before
     public void crearMonedero(){
         monedero = new Wallet();
@@ -30,5 +31,13 @@ public class WalletTest {
     public void generateKeyPairTest() {
         monedero2.generateKeyPair();
         System.out.println("\n Direccion del monedero2: \n" +monedero2.getAddress().hashCode());
+    }
+
+    @Test
+    public void toStringTest(){
+        monedero.generateKeyPair();
+        monedero2.generateKeyPair();
+        System.out.println("Wallet_1: \n" + monedero.toString());
+        System.out.println("Wallet_2: \n" + monedero2.toString());
     }
 }
