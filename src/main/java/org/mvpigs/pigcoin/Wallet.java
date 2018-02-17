@@ -12,6 +12,8 @@ public class Wallet {
     private double total_input = 0d;
     private double total_output = 0d;
     private double balance = 0d;
+    private ArrayList<Transaction> inputTransactions = new ArrayList<>();
+    private ArrayList<Transaction> outputTransactions = new ArrayList<>();
 
     public Wallet(){
 
@@ -74,5 +76,20 @@ public class Wallet {
         }
     }
 
+    public void loadInputTransactions(BlockChain bChain) {
+       inputTransactions = bChain.loadInputTransactions(address);
+    }
+
+    public ArrayList<Transaction> getInputTransactions() {
+        return inputTransactions;
+    }
+
+    public void loadOutputTransactions(BlockChain bChain){
+        outputTransactions = bChain.loadOutputTransactions(address);
+    }
+
+    public ArrayList<Transaction> getOutputTransactions() {
+        return outputTransactions;
+    }
 }
 
