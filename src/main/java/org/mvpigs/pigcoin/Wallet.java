@@ -3,10 +3,7 @@ package org.mvpigs.pigcoin;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 public class Wallet {
 
@@ -18,8 +15,9 @@ public class Wallet {
     private Set<Transaction> inputTransactions = new HashSet<>();
     private Set<Transaction> outputTransactions = new HashSet<>();
     private Set<Transaction> usedTransactions = new HashSet<>();
+    private Map<String, Double> consumedPC = new HashMap<>();
 
-    public Wallet(){
+    public Wallet() {
 
     }
 
@@ -54,14 +52,14 @@ public class Wallet {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return "Wallet = " + getAddress().hashCode() + "\n" +
                 "Total input = " + getTotal_input() + "\n" +
                 "Total output = " + getTotal_output() + "\n" +
                 "Balance = " + getBalance() + "\n";
     }
 
-    public void loadCoins(BlockChain bChain){
+    public void loadCoins(BlockChain bChain) {
         dineroEnviado(bChain);
         dineroRecibido(bChain);
     }
@@ -79,7 +77,7 @@ public class Wallet {
 
     public void dineroRecibido(BlockChain bChain) {
         Set<Transaction> senderPC = new HashSet<>(bChain.devuelveRecipientPC(address));
-        for (Transaction trans : senderPC){
+        for (Transaction trans : senderPC) {
             if (usedTransactions.contains(trans) == false) {
                 total_input += trans.getPigcoins();
                 balance += trans.getPigcoins();
@@ -89,14 +87,14 @@ public class Wallet {
     }
 
     public void loadInputTransactions(BlockChain bChain) {
-       inputTransactions = bChain.loadInputTransactions(address);
+        inputTransactions = bChain.loadInputTransactions(address);
     }
 
     public Set<Transaction> getInputTransactions() {
         return inputTransactions;
     }
 
-    public void loadOutputTransactions(BlockChain bChain){
+    public void loadOutputTransactions(BlockChain bChain) {
 
         outputTransactions = bChain.loadOutputTransactions(address);
     }
@@ -104,19 +102,33 @@ public class Wallet {
     public Set<Transaction> getOutputTransactions() {
         return outputTransactions;
     }
-}
-    /*public void sendCoins(PublicKey address, double pigcoins, String message, BlockChain bChain) {
 
-                   collectCoins(pigcoins);
-                   System.out.println(usedTransactions);
-    };
+    public void sendCoins(PublicKey address, Double pigcoins, String message, BlockChain bChain) {
 
-    public void collectCoins(double pigcoins){
-        for (Transaction trans : outputTransactions) {
-            if ((this.address == trans.getpKey_sender()) && !(usedTransactions.contains(trans))) {
-                usedTransactions.add(trans);
+        collectCoins(pigcoins);
+        System.out.println(usedTransactions);
+    }
+
+    public Map collectCoins(Double pigcoins) {
+        Map<String, Double> consumedCoins = new HashMap<>();
+        for (Transaction trans : inputTransactions) {
+            if ((this.address == trans.getpKey_recipient()) && !(consumedPC.containsKey(trans.getHash()))) {
+
+                    if (trans.getPigcoins() <= pigcoins) {
+                        consumedCoins.put(trans.getHash(), trans.getPigcoins());
+                        consumedPC.put(trans.getHash(), trans.getPigcoins());
+                        pigcoins -= trans.getPigcoins();
+                    } else {
+                        while (pigcoins != 0) {
+                        consumedCoins.put(trans.getHash(), pigcoins);
+                        consumedPC.put(trans.getHash(), trans.getPigcoins());
+                        consumedCoins.put("CA_" + trans.getHash(), trans.getPigcoins() - pigcoins);
+                        pigcoins -= pigcoins;
+                    }
+                }
             }
         }
+        return consumedCoins;
     }
-*/
+}
 
