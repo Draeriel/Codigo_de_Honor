@@ -2,9 +2,12 @@ package org.mvpigs.pigcoin;
 
 import java.security.PublicKey;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class BlockChain {
-    private ArrayList<Transaction> bChain = new ArrayList<>();
+    private Set<Transaction> bChain = new HashSet<>();
 
     public BlockChain(){
 
@@ -24,28 +27,28 @@ public class BlockChain {
         System.out.println(bChain.toArray()[posicion]);
     }
 
-    public ArrayList<Double> devuelveSenderPC(PublicKey address) {
-        ArrayList<Double> senderPC = new ArrayList<>();
+    public Set<Transaction> devuelveSenderPC(PublicKey address) {
+        Set<Transaction> senderPC = new HashSet<>();
         for (Transaction trans : bChain){
             if (trans.getpKey_sender() == address) {
-                senderPC.add(trans.getPigcoins());
+                senderPC.add(trans);
             }
         }
         return senderPC;
     }
 
-    public ArrayList<Double> devuelveRecipientPC(PublicKey address) {
-        ArrayList<Double> senderPC = new ArrayList<>();
+    public Set<Transaction> devuelveRecipientPC(PublicKey address) {
+        Set<Transaction> senderPC = new HashSet<>();
         for (Transaction trans : bChain){
             if (trans.getpKey_recipient() == address) {
-                senderPC.add(trans.getPigcoins());
+                senderPC.add(trans);
             }
         }
         return senderPC;
     }
 
-    public ArrayList<Transaction> loadInputTransactions(PublicKey address) {
-        ArrayList<Transaction> recipientPC = new ArrayList<>();
+    public Set<Transaction> loadInputTransactions(PublicKey address) {
+        Set<Transaction> recipientPC = new HashSet<>();
         for (Transaction trans : bChain){
             if (trans.getpKey_recipient() == address) {
                recipientPC.add(trans);
@@ -54,8 +57,8 @@ public class BlockChain {
         return recipientPC;
     }
 
-    public ArrayList<Transaction> loadOutputTransactions(PublicKey address) {
-        ArrayList<Transaction> senderPC = new ArrayList<>();
+    public Set<Transaction> loadOutputTransactions(PublicKey address) {
+        Set<Transaction> senderPC = new HashSet<>();
         for (Transaction trans : bChain){
             if (trans.getpKey_sender() == address) {
                 senderPC.add(trans);

@@ -4,6 +4,9 @@ import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class Wallet {
 
@@ -12,8 +15,9 @@ public class Wallet {
     private double total_input = 0d;
     private double total_output = 0d;
     private double balance = 0d;
-    private ArrayList<Transaction> inputTransactions = new ArrayList<>();
-    private ArrayList<Transaction> outputTransactions = new ArrayList<>();
+    private Set<Transaction> inputTransactions = new HashSet<>();
+    private Set<Transaction> outputTransactions = new HashSet<>();
+    private Set<Transaction> usedTransactions = new HashSet<>();
 
     public Wallet(){
 
@@ -63,16 +67,24 @@ public class Wallet {
     }
 
     public void dineroEnviado(BlockChain bChain) {
-        ArrayList<Double> senderPC = new ArrayList<>(bChain.devuelveSenderPC(address));
-        for (double total : senderPC){
-            this.total_output += total;
+        Set<Transaction> senderPC = new HashSet<>(bChain.devuelveSenderPC(address));
+        for (Transaction trans : senderPC) {
+            if (usedTransactions.contains(trans) == false) {
+                total_output += trans.getPigcoins();
+                balance -= trans.getPigcoins();
+                usedTransactions.add(trans);
+            }
         }
     }
 
     public void dineroRecibido(BlockChain bChain) {
-        ArrayList<Double> senderPC = new ArrayList<>(bChain.devuelveRecipientPC(address));
-        for (double total : senderPC){
-            this.total_input += total;
+        Set<Transaction> senderPC = new HashSet<>(bChain.devuelveRecipientPC(address));
+        for (Transaction trans : senderPC){
+            if (usedTransactions.contains(trans) == false) {
+                total_input += trans.getPigcoins();
+                balance += trans.getPigcoins();
+                usedTransactions.add(trans);
+            }
         }
     }
 
@@ -80,16 +92,31 @@ public class Wallet {
        inputTransactions = bChain.loadInputTransactions(address);
     }
 
-    public ArrayList<Transaction> getInputTransactions() {
+    public Set<Transaction> getInputTransactions() {
         return inputTransactions;
     }
 
     public void loadOutputTransactions(BlockChain bChain){
+
         outputTransactions = bChain.loadOutputTransactions(address);
     }
 
-    public ArrayList<Transaction> getOutputTransactions() {
+    public Set<Transaction> getOutputTransactions() {
         return outputTransactions;
     }
 }
+    /*public void sendCoins(PublicKey address, double pigcoins, String message, BlockChain bChain) {
+
+                   collectCoins(pigcoins);
+                   System.out.println(usedTransactions);
+    };
+
+    public void collectCoins(double pigcoins){
+        for (Transaction trans : outputTransactions) {
+            if ((this.address == trans.getpKey_sender()) && !(usedTransactions.contains(trans))) {
+                usedTransactions.add(trans);
+            }
+        }
+    }
+*/
 
