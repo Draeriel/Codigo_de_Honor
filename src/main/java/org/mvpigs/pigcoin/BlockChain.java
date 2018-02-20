@@ -1,10 +1,7 @@
 package org.mvpigs.pigcoin;
 
 import java.security.PublicKey;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 public class BlockChain {
     private Set<Transaction> bChain = new HashSet<>();
@@ -65,5 +62,38 @@ public class BlockChain {
             }
         }
         return senderPC;
+    }
+
+    public void processTransactions(PublicKey pKey_sender, PublicKey pKey_recipient, Map consumedCoins, String message, byte[] signedTransaction){
+        if (isSignatureValid(pKey_sender, message, signedTransaction)){
+            if (isConsumedCoinValid(consumedCoins)){
+                createTransaction(pKey_sender, pKey_recipient, consumedCoins,message, signedTransaction);
+            }
+        } else {
+            System.out.println("Transacción no completada.");
+        }
+    }
+
+    public boolean isSignatureValid(PublicKey pKey_sender, String message, byte[] signedTransaction){
+        boolean mock = true;
+        return mock;
+    }
+
+    public boolean isConsumedCoinValid(Map consumedCoins){
+        boolean mock = true;
+        return mock;
+    }
+
+    public void createTransaction(PublicKey pKey_sender, PublicKey pKey_recipient, Map<String, Double> consumedCoins, String message, byte[] signedTransaction){
+        for (Map.Entry<String, Double> consumed : consumedCoins.entrySet()) {
+            String hash = "hash_" + (bChain.size() + 1);
+            if (consumed.getKey().toString().substring(0, 2) != "CA"){
+                Transaction trans = new Transaction(hash, consumed.getKey(), pKey_sender, pKey_recipient, consumed.getValue(), message);
+                addOrigin(trans);
+            } else {
+                Transaction trans = new Transaction(hash, consumed.getKey(), pKey_sender, pKey_sender, consumed.getValue(), message);
+                addOrigin(trans);
+            }
+        }
     }
 }

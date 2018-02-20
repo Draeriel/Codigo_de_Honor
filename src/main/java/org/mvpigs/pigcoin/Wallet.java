@@ -15,7 +15,6 @@ public class Wallet {
     private Set<Transaction> inputTransactions = new HashSet<>();
     private Set<Transaction> outputTransactions = new HashSet<>();
     private Set<Transaction> usedTransactions = new HashSet<>();
-    private Map<String, Double> consumedPC = new HashMap<>();
 
     public Wallet() {
 
@@ -87,7 +86,11 @@ public class Wallet {
     }
 
     public void loadInputTransactions(BlockChain bChain) {
-        inputTransactions = bChain.loadInputTransactions(address);
+        Set<Transaction> recipientPC = bChain.loadInputTransactions(address);
+        for (Transaction trans : recipientPC){
+            inputTransactions.add(trans);
+        }
+
     }
 
     public Set<Transaction> getInputTransactions() {
@@ -95,33 +98,34 @@ public class Wallet {
     }
 
     public void loadOutputTransactions(BlockChain bChain) {
-
-        outputTransactions = bChain.loadOutputTransactions(address);
+        Set<Transaction> senderPC = bChain.loadInputTransactions(address);
+        for (Transaction trans : senderPC){
+            outputTransactions.add(trans);
+        }
     }
 
     public Set<Transaction> getOutputTransactions() {
         return outputTransactions;
     }
 
-    public void sendCoins(PublicKey address, Double pigcoins, String message, BlockChain bChain) {
+    public void sendCoins(PublicKey pKey_recipient, Double pigcoins, String message, BlockChain bChain) {
+        Map consumedCoins = collectCoins(pigcoins);
 
-        collectCoins(pigcoins);
-        System.out.println(usedTransactions);
+        byte[] signedTransaction = signTransaction(message);
+        bChain.processTransactions(address, pKey_recipient, consumedCoins, message, signedTransaction);
     }
 
     public Map collectCoins(Double pigcoins) {
         Map<String, Double> consumedCoins = new HashMap<>();
-        for (Transaction trans : inputTransactions) {
-            if ((this.address == trans.getpKey_recipient()) && !(consumedPC.containsKey(trans.getHash()))) {
+        for (Transaction trans : getInputTransactions()) {
+            if ((this.address == trans.getpKey_recipient()) && !(consumedCoins.containsKey(trans.getHash()))) {
 
                     if (trans.getPigcoins() <= pigcoins) {
                         consumedCoins.put(trans.getHash(), trans.getPigcoins());
-                        consumedPC.put(trans.getHash(), trans.getPigcoins());
                         pigcoins -= trans.getPigcoins();
                     } else {
                         while (pigcoins != 0) {
                         consumedCoins.put(trans.getHash(), pigcoins);
-                        consumedPC.put(trans.getHash(), trans.getPigcoins());
                         consumedCoins.put("CA_" + trans.getHash(), trans.getPigcoins() - pigcoins);
                         pigcoins -= pigcoins;
                     }
@@ -130,5 +134,10 @@ public class Wallet {
         }
         return consumedCoins;
     }
+
+    public byte[] signTransaction(String message){
+       return GenSig.sign(sKey, message);
+    }
 }
+
 
