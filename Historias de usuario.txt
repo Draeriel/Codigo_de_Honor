@@ -1,0 +1,23 @@
+Quién: El usuario						|	Generar la wallet con su clas pública y privada.	
+Qué/Para: Ver la clave pública de una wallet			|	Mostrar da dirección pública.
+---------------------------------------------------------------------------------------------------------------------------------------------------
+Quién: El usuario						|	Mostrar la clave pública de ambas wallets
+Qué/Para: Ver la clase publica de ambas wallets			|
+---------------------------------------------------------------------------------------------------------------------------------------------------
+Quién: El usuario						|	Hacer una transacción de una wallet a otra.
+Qué: Crea una transaccion de pigcoins				|	Mostrar la transacción.
+Para: Visualizar la transaccion					|
+---------------------------------------------------------------------------------------------------------------------------------------------------
+Quién: El usuario						|	Añadir las transacciones al BlockChain.
+Qué: Añadir las transacciones al BlockChain			|	Mostrar todas las transacciones
+Para: Poder ver todas las transacciones realizadas		|
+---------------------------------------------------------------------------------------------------------------------------------------------------
+Quién: El usuario						|	Mostrar la X transacción, siendo X un número entero pasado por parametro
+Qué/Para: Visualizar una transacción en una posición determinada|
+---------------------------------------------------------------------------------------------------------------------------------------------------
+Quién: El usuario						|	Mostrar la wallet con los Pigcoins enviados, recibidos y el balance.
+Qué/Para: Visualizar el estado actual de la wallet		|
+---------------------------------------------------------------------------------------------------------------------------------------------------
+Quién: El usuario						|	Cargar todas las transacciones de una wallet en ella, y mostrarlas.
+Qué/Para: Visualizar las transacciones de una determinada wallet|
+---------------------------------------------------------------------------------------------------------------------------------------------------
