@@ -75,19 +75,26 @@ public class BlockChain {
     }
 
     public boolean isSignatureValid(PublicKey pKey_sender, String message, byte[] signedTransaction){
+        //return GenSig.verify(pKey_sender, message, signedTransaction);
         boolean mock = true;
         return mock;
     }
 
-    public boolean isConsumedCoinValid(Map consumedCoins){
-        boolean mock = true;
-        return mock;
+    public boolean isConsumedCoinValid(Map<String,Double> consumedCoins){
+        for (Transaction trans : this.bChain){
+            for (Map.Entry<String, Double> entrada : consumedCoins.entrySet()){
+                if (entrada.getKey().equals(trans.getHash())){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public void createTransaction(PublicKey pKey_sender, PublicKey pKey_recipient, Map<String, Double> consumedCoins, String message, byte[] signedTransaction){
         for (Map.Entry<String, Double> consumed : consumedCoins.entrySet()) {
             String hash = "hash_" + (bChain.size() + 1);
-            if (consumed.getKey().toString().substring(0, 2) != "CA"){
+            if (!consumed.getKey().toString().substring(0, 2).equals("CA")){
                 Transaction trans = new Transaction(hash, consumed.getKey(), pKey_sender, pKey_recipient, consumed.getValue(), message);
                 addOrigin(trans);
             } else {

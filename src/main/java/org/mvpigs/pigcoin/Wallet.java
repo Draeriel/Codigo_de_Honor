@@ -14,7 +14,8 @@ public class Wallet {
     private double balance = 0d;
     private Set<Transaction> inputTransactions = new HashSet<>();
     private Set<Transaction> outputTransactions = new HashSet<>();
-    private Set<Transaction> usedTransactions = new HashSet<>();
+    private Set<Transaction> usedTransactionsIn = new HashSet<>();
+    private Set<Transaction> usedTransactionsOut = new HashSet<>();
 
     public Wallet() {
 
@@ -59,17 +60,17 @@ public class Wallet {
     }
 
     public void loadCoins(BlockChain bChain) {
-        dineroEnviado(bChain);
         dineroRecibido(bChain);
+        dineroEnviado(bChain);
     }
 
     public void dineroEnviado(BlockChain bChain) {
         Set<Transaction> senderPC = new HashSet<>(bChain.devuelveSenderPC(address));
         for (Transaction trans : senderPC) {
-            if (usedTransactions.contains(trans) == false) {
+            if (usedTransactionsOut.contains(trans) == false) {
                 total_output += trans.getPigcoins();
                 balance -= trans.getPigcoins();
-                usedTransactions.add(trans);
+                usedTransactionsOut.add(trans);
             }
         }
     }
@@ -77,10 +78,10 @@ public class Wallet {
     public void dineroRecibido(BlockChain bChain) {
         Set<Transaction> senderPC = new HashSet<>(bChain.devuelveRecipientPC(address));
         for (Transaction trans : senderPC) {
-            if (usedTransactions.contains(trans) == false) {
+            if (usedTransactionsIn.contains(trans) == false) {
                 total_input += trans.getPigcoins();
                 balance += trans.getPigcoins();
-                usedTransactions.add(trans);
+                usedTransactionsIn.add(trans);
             }
         }
     }
@@ -110,9 +111,8 @@ public class Wallet {
 
     public void sendCoins(PublicKey pKey_recipient, Double pigcoins, String message, BlockChain bChain) {
         Map consumedCoins = collectCoins(pigcoins);
-
         byte[] signedTransaction = signTransaction(message);
-        bChain.processTransactions(address, pKey_recipient, consumedCoins, message, signedTransaction);
+        bChain.processTransactions(getAddress(), pKey_recipient, consumedCoins, message, signedTransaction);
     }
 
     public Map collectCoins(Double pigcoins) {
@@ -136,7 +136,11 @@ public class Wallet {
     }
 
     public byte[] signTransaction(String message){
-       return GenSig.sign(sKey, message);
+       return GenSig.sign(getsKey(), message);
+    }
+
+    public static PrivateKey getsKey() {
+        return sKey;
     }
 }
 
